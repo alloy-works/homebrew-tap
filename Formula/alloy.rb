@@ -7,36 +7,79 @@ class Alloy < Formula
   version "0.1.0-alpha.1"
 
   on_macos do
-    url "https://github.com/alloy-works/alloy/releases/download/v#{version}/alloy-v#{version}-aarch64-apple-darwin.tar.gz"
+    url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-aarch64-apple-darwin.tar.gz"
     sha256 "PLACEHOLDER"
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/alloy-works/alloy/releases/download/v#{version}/alloy-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
       sha256 "PLACEHOLDER"
     end
     on_intel do
-      url "https://github.com/alloy-works/alloy/releases/download/v#{version}/alloy-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
       sha256 "PLACEHOLDER"
     end
   end
 
   def install
     bin.install "alloy"
+
+    # Service wrapper: pulls image if missing, cleans stale containers, runs in foreground
+    (libexec/"alloy-service").write <<~SH
+      #!/bin/bash
+      set -e
+      IMAGE="ghcr.io/alloy-works/alloy:dev"
+      CONTAINER="alloy-dev"
+
+      # Check Docker is available
+      if ! command -v docker >/dev/null 2>&1; then
+        echo "Error: Docker is required. Install Docker Desktop first."
+        exit 1
+      fi
+
+      # Pull image (requires prior docker login ghcr.io)
+      if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+        echo "Pulling $IMAGE..."
+        if ! docker pull "$IMAGE"; then
+          echo "Error: Could not pull $IMAGE"
+          echo "Run 'docker login ghcr.io' with a PAT that has read:packages scope"
+          exit 1
+        fi
+      fi
+
+      # Remove stale container from previous run
+      docker rm -f "$CONTAINER" 2>/dev/null || true
+
+      # Run in foreground (launchd manages the lifecycle)
+      exec docker run --rm \\
+        -p 50052:50052 \\
+        --shm-size=4g \\
+        --name "$CONTAINER" \\
+        "$IMAGE"
+    SH
+    chmod 0755, libexec/"alloy-service"
+  end
+
+  service do
+    run [opt_libexec/"alloy-service"]
+    keep_alive true
+    log_path var/"log/alloy.log"
+    error_log_path var/"log/alloy.log"
   end
 
   def caveats
     <<~EOS
       The Alloy CLI is installed.
 
-      To start the backend (team members with Docker + GHCR access):
+      First-time setup (requires GHCR access):
         docker login ghcr.io
-        docker run -d -p 50052:50052 --shm-size=4g --name alloy-dev ghcr.io/alloy-works/alloy:dev
-        alloy status
 
-      To connect to a remote Alloy server:
-        alloy status --endpoint https://your-lattice:50052
+      Then start the backend:
+        brew services start alloy
+
+      The CLI connects to localhost:50052 by default.
+      Logs: #{var}/log/alloy.log
     EOS
   end
 
