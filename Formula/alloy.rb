@@ -29,6 +29,10 @@ class Alloy < Formula
     (libexec/"alloy-service").write <<~SH
       #!/bin/bash
       set -e
+
+      # launchd runs with a minimal PATH — add common Docker locations
+      export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
+
       IMAGE="ghcr.io/alloy-works/alloy:dev"
       CONTAINER="alloy-dev"
 
