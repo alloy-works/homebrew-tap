@@ -8,17 +8,17 @@ class Alloy < Formula
 
   on_macos do
     url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-apple-darwin.tar.gz"
-    sha256 "f208cef31391b24f6186e5fc69e322fa187f0137405c6fd378b084236a4aa8fe"
+    sha256 "76d4b5a783227275fb89d479ec4e93c3dc82ae83c52c1955b8d5478fbdf5ce2c"
   end
 
   on_linux do
     on_arm do
       url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "3e1f7009e3bb1c54f9211056ea9a93919f35614d80d5fd4330bd5d2151a2378a"
+      sha256 "87610b0cc4f9cf653be7398ce39678633c0155561a6d7875dc92ba1a05ca6d65"
     end
     on_intel do
       url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "b6869914f5e3901824f5c64b31854f2ddc3217d05a75303b83fdfdc374afba24"
+      sha256 "dbf233cfd1ee31a4549744b01ddf4212ccca7eb7437394633b9a21122416dda0"
     end
   end
 
