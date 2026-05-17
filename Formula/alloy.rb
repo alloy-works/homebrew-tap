@@ -8,17 +8,17 @@ class Alloy < Formula
 
   on_macos do
     url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-apple-darwin.tar.gz"
-    sha256 "1d79b288a6aedfa5508498e39c5f3ead53f3739e41a60b6092f1fe4acf933846"
+    sha256 "c181b93c451683dc6122df31602370b160f95f9b20e015fcee6bfe99159f3495"
   end
 
   on_linux do
     on_arm do
       url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "50d6d24771d35d79209ab586bbc2d0065a41767b04353990ec7839732be50c32"
+      sha256 "4b63ca323a6d6278fcdd6d46bd6ad35e4cce2ec39ffa88fa9c3bdb3557a72299"
     end
     on_intel do
       url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "017e9ab83e3e89ff50dedd9c7611b398e9c14b4d1bf64f37d418206b406e135a"
+      sha256 "86e901a9743081745eb6240538cf4d38993889b4573204c06902e5d7c5ae68a3"
     end
   end
 
@@ -29,10 +29,6 @@ class Alloy < Formula
     (libexec/"alloy-service").write <<~SH
       #!/bin/bash
       set -e
-
-      # launchd runs with a minimal PATH — add common Docker locations
-      export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
-
       IMAGE="ghcr.io/alloy-works/alloy:dev"
       CONTAINER="alloy-dev"
 
