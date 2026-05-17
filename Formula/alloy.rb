@@ -7,18 +7,18 @@ class Alloy < Formula
   version "0.1.0-alpha.1"
 
   on_macos do
-    url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-aarch64-apple-darwin.tar.gz"
-    sha256 "PLACEHOLDER"
+    url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-apple-darwin.tar.gz"
+    sha256 "a2645fead81de555c343312f65292624621e96472249576781322407348520b0"
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "PLACEHOLDER"
+      url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "f26880ffe7f45529a241a780fe682aa9ac8d748064bfa8dc24b0ccb535ccd6d5"
     end
     on_intel do
-      url "https://github.com/alloy-works/homebrew-tap/releases/download/v#{version}/alloy-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "PLACEHOLDER"
+      url "https://github.com/alloy-works/homebrew-tap/releases/download/v0.1.0-alpha.1/alloy-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "90698a8b05144a9f1aa723073d6a71173403e6d7bd8178ee0b66b7785a95692e"
     end
   end
 
@@ -32,31 +32,27 @@ class Alloy < Formula
       IMAGE="ghcr.io/alloy-works/alloy:dev"
       CONTAINER="alloy-dev"
 
-      # Check Docker is available
       if ! command -v docker >/dev/null 2>&1; then
         echo "Error: Docker is required. Install Docker Desktop first."
         exit 1
       fi
 
-      # Pull image (requires prior docker login ghcr.io)
-      if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-        echo "Pulling $IMAGE..."
-        if ! docker pull "$IMAGE"; then
-          echo "Error: Could not pull $IMAGE"
+      if ! docker image inspect "\$IMAGE" >/dev/null 2>&1; then
+        echo "Pulling \$IMAGE..."
+        if ! docker pull "\$IMAGE"; then
+          echo "Error: Could not pull \$IMAGE"
           echo "Run 'docker login ghcr.io' with a PAT that has read:packages scope"
           exit 1
         fi
       fi
 
-      # Remove stale container from previous run
-      docker rm -f "$CONTAINER" 2>/dev/null || true
+      docker rm -f "\$CONTAINER" 2>/dev/null || true
 
-      # Run in foreground (launchd manages the lifecycle)
       exec docker run --rm \\
         -p 50052:50052 \\
         --shm-size=4g \\
-        --name "$CONTAINER" \\
-        "$IMAGE"
+        --name "\$CONTAINER" \\
+        "\$IMAGE"
     SH
     chmod 0755, libexec/"alloy-service"
   end
@@ -79,7 +75,6 @@ class Alloy < Formula
         brew services start alloy
 
       The CLI connects to localhost:50052 by default.
-      Logs: #{var}/log/alloy.log
     EOS
   end
 
