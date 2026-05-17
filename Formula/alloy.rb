@@ -1,5 +1,6 @@
 # Homebrew formula for Alloy CLI
 # Auto-updated by release workflow — do not edit manually
+require "download_strategy"
 
 class Alloy < Formula
   desc "Polyglot FaaS platform for orchestrating C++, Python, and Rust DAGs"
